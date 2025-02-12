@@ -1,8 +1,13 @@
 export interface CustomerInfo {
-    firstName: string;
-    lastName: string;
-    dateOfBirth: string;
-    email: string;
+  type: 'person',
+  email: string,
+  mobile: string,
+  personDetails: {
+    firstName: string,
+    lastName: string,
+    dateOfBirth: string,
+    nationality: string
+  }
   }
   
   export interface VerificationResult {

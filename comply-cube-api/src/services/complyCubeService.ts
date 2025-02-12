@@ -11,7 +11,7 @@ export class ComplyCubeService {
 
   private getHeaders() {
     return {
-      Authorization: `Bearer ${this.apiKey}`,
+      Authorization: `${this.apiKey}`,
       'Content-Type': 'application/json',
     };
   }
@@ -23,9 +23,13 @@ export class ComplyCubeService {
         {
           type: 'person',
           email: customerInfo.email,
-          firstName: customerInfo.firstName,
-          lastName: customerInfo.lastName,
-          dateOfBirth: customerInfo.dateOfBirth,
+          mobile: customerInfo.email,
+          personDetails: {
+            firstName: customerInfo.personDetails.firstName,
+            lastName: customerInfo.personDetails.lastName,
+            dob: customerInfo.personDetails.dateOfBirth,
+            nationality: customerInfo.personDetails.nationality
+          }
         },
         { headers: this.getHeaders() }
       );

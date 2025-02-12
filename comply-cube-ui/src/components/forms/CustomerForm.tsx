@@ -34,7 +34,7 @@ export const CustomerForm: React.FC = () => {
     setVerificationState({ status: 'pending' });
 
     try {
-      const response = await fetch('http://localhost:3000/api/verification/onboard', {
+      const response = await fetch('http://localhost:3001/api/verification/onboard', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
