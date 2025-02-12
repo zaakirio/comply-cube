@@ -16,10 +16,11 @@ router.post('/onboard', validateCustomerInfo, async (req, res) => {
       checkId: check.id,
       status: 'pending',
     });
-  } catch (error) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     res.status(500).json({
       error: 'Failed to start verification process',
-      details: error.message,
+      details: errorMessage,
     });
   }
 });
@@ -28,10 +29,11 @@ router.get('/status/:checkId', async (req, res) => {
   try {
     const status = await complyCubeService.getVerificationStatus(req.params.checkId);
     res.json(status);
-  } catch (error) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     res.status(500).json({
       error: 'Failed to get verification status',
-      details: error.message,
+      details: errorMessage,
     });
   }
 });

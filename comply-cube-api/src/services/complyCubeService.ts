@@ -30,8 +30,11 @@ export class ComplyCubeService {
         { headers: this.getHeaders() }
       );
       return response.data;
-    } catch (error) {
-      throw new Error(`Failed to create client: ${error.message}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to create client: ${error.message}`);
+      }
+      throw new Error('Failed to create client: Unknown error');
     }
   }
 
@@ -46,8 +49,11 @@ export class ComplyCubeService {
         { headers: this.getHeaders() }
       );
       return response.data;
-    } catch (error) {
-      throw new Error(`Failed to create check: ${error.message}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to create check: ${error.message}`);
+      }
+      throw new Error('Failed to create check: Unknown error');
     }
   }
 
@@ -62,8 +68,11 @@ export class ComplyCubeService {
         status: response.data.status,
         details: response.data,
       };
-    } catch (error) {
-      throw new Error(`Failed to get verification status: ${error.message}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to get verification status: ${error.message}`);
+      }
+      throw new Error('Failed to get verification status: Unknown error');
     }
   }
 }
