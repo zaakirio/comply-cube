@@ -26,9 +26,25 @@ export default function DocumentUpload({ clientId, onUploadComplete }) {
     if (sdkReady) {
       const client = new window.ComplyCube.Client({
         clientId: clientId,
+        lang: "en",
+        theme: {
+          name: "dark",
+        },
+        steps: [
+          {
+            type: "document",
+            country: "any",
+            documents: ["passport", "driving_license", "national_identity_card"],
+          },
+          {
+            type: "face",
+            variant: "photo",
+          },
+        ],
       })
 
       client.on("complete", (event) => {
+        console.log("Verification completed:", event)
         setCheckId(event.checkId)
       })
 

@@ -7,7 +7,7 @@ export async function POST(req: Request) {
     const response = await fetch("https://api.complycube.com/v1/clients", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${process.env.COMPLYCUBE_API_KEY}`,
+        Authorization: `${process.env.COMPLYCUBE_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -26,6 +26,7 @@ export async function POST(req: Request) {
     })
 
     if (!response.ok) {
+      console.log(response);
       throw new Error("Failed to create client")
     }
 
