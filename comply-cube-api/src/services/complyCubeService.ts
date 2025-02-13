@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CustomerInfo, VerificationResult } from '../types';
+import { CustomerInfo, DocumentInfo, VerificationResult } from '../types';
 
 export class ComplyCubeService {
   private apiKey: string;
@@ -39,6 +39,26 @@ export class ComplyCubeService {
         throw new Error(`Failed to create client: ${error.message}`);
       }
       throw new Error('Failed to create client: Unknown error');
+    }
+  }
+
+  async createDocument(clientInfo: DocumentInfo) {
+    try {
+      const response = await axios.post(
+        `${this.baseUrl}/documents`,
+        {
+          clientId: clientInfo.clientId,
+          type: clientInfo.documentType,
+          issuingCountry: clientInfo.issuingCountry
+        },
+        { headers: this.getHeaders() }
+      );
+      return response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to create document: ${error.message}`);
+      }
+      throw new Error('Failed to create check: Unknown error');
     }
   }
 

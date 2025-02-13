@@ -9,6 +9,12 @@ export interface CustomerInfo {
     nationality: string
   }
   }
+
+  export interface DocumentInfo{
+    clientId: string,
+    documentType: string,
+    issuingCountry: string
+  }
   
   export interface VerificationResult {
     id: string;
