@@ -31,9 +31,10 @@ const validateDate = (date: string): boolean => {
 };
 
 const validateName = (name: string): boolean => {
-  const nameRegex = /^[A-Za-z]+$/; // Ensures name contains only alphabetic characters
+  const nameRegex = /^[A-Za-zÁáÉéÍíÓóÚúÑñÜü\s'-]+$/; 
   return nameRegex.test(name);
 };
+
 
 export const validateCustomerInfo = (
   req: CustomerInfoRequest,
