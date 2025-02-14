@@ -1,29 +1,39 @@
-import axios from 'axios';
-import { CustomerInfo, DocumentInfo, VerificationResult } from '../types';
+import axios, { AxiosError } from 'axios';
+import {
+  CustomerInfo,
+  DocumentInfo,
+  CheckInfo,
+  VerificationResult,
+  BaseDocument
+} from '../types';
 
 export class ComplyCubeService {
-  private apiKey: string;
-  private baseUrl = 'https://api.complycube.com/v1';
+  private readonly baseUrl = 'https://api.complycube.com/v1';
+  
+  constructor(private readonly apiKey: string) {}
 
-  constructor(apiKey: string) {
-    this.apiKey = apiKey;
-  }
-
-  private getHeaders() {
+  private get headers() {
     return {
-      Authorization: `${this.apiKey}`,
+      Authorization: this.apiKey,
       'Content-Type': 'application/json',
     };
   }
 
+  private handleError(error: unknown, operation: string): never {
+    if (error instanceof AxiosError) {
+      throw new Error(`Failed to ${operation}: ${error.response?.data?.message || error.message}`);
+    }
+    throw new Error(`Failed to ${operation}: Unknown error`);
+  }
+
   async createClient(customerInfo: CustomerInfo) {
     try {
-      const response = await axios.post(
+      const { data } = await axios.post(
         `${this.baseUrl}/clients`,
         {
-          type: 'person',
+          type: customerInfo.type,
           email: customerInfo.email,
-          mobile: customerInfo.email,
+          mobile: customerInfo.mobile,
           personDetails: {
             firstName: customerInfo.personDetails.firstName,
             lastName: customerInfo.personDetails.lastName,
@@ -31,72 +41,99 @@ export class ComplyCubeService {
             nationality: customerInfo.personDetails.nationality
           }
         },
-        { headers: this.getHeaders() }
+        { headers: this.headers }
       );
-      return response.data;
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new Error(`Failed to create client: ${error.message}`);
-      }
-      throw new Error('Failed to create client: Unknown error');
+      return data;
+    } catch (error) {
+      this.handleError(error, 'create client');
     }
   }
 
-  async createDocument(clientInfo: DocumentInfo) {
+  async createDocument(documentInfo: BaseDocument) {
     try {
-      const response = await axios.post(
+      const { data } = await axios.post(
         `${this.baseUrl}/documents`,
         {
-          clientId: clientInfo.clientId,
-          type: clientInfo.documentType,
-          issuingCountry: clientInfo.issuingCountry
+          clientId: documentInfo.clientId,
+          type: documentInfo.documentType,
+          issuingCountry: documentInfo.issuingCountry
         },
-        { headers: this.getHeaders() }
+        { headers: this.headers }
       );
-      return response.data;
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new Error(`Failed to create document: ${error.message}`);
-      }
-      throw new Error('Failed to create check: Unknown error');
+      return data;
+    } catch (error) {
+      this.handleError(error, 'create document');
     }
   }
 
-  async createCheck(clientId: string) {
+  async uploadDocument(documentInfo: DocumentInfo) {
+    if (!documentInfo.documentId) {
+      throw new Error('Document ID is required for upload');
+    }
+
     try {
-      const response = await axios.post(
+      const { data } = await axios.post(
+        `${this.baseUrl}/documents/${documentInfo.documentId}/upload/front`,
+        {
+          fileName: documentInfo.fileName,
+          data: documentInfo.data
+        },
+        { headers: this.headers }
+      );
+      return data;
+    } catch (error) {
+      this.handleError(error, 'upload document');
+    }
+  }
+
+  async uploadLivePhoto(clientId: string, photoData: string) {
+    try {
+      const { data } = await axios.post(
+        `${this.baseUrl}/livePhotos`,
+        {
+          clientId,
+          data: photoData
+        },
+        { headers: this.headers }
+      );
+      return data;
+    } catch (error) {
+      this.handleError(error, 'upload live photo');
+    }
+  }
+
+  async createCheck(checkInfo: CheckInfo) {
+    try {
+      const { data } = await axios.post(
         `${this.baseUrl}/checks`,
         {
-          type: 'identity',
-          clientId,
+          clientId: checkInfo.clientId,
+          documentId: checkInfo.documentId,
+          livePhotoId: checkInfo.livePhotoId,
+          type: 'identity_check' 
         },
-        { headers: this.getHeaders() }
+        { headers: this.headers }
       );
-      return response.data;
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new Error(`Failed to create check: ${error.message}`);
-      }
-      throw new Error('Failed to create check: Unknown error');
+      return data;
+    } catch (error) {
+      this.handleError(error, 'create check');
     }
   }
 
   async getVerificationStatus(checkId: string): Promise<VerificationResult> {
     try {
-      const response = await axios.get(
+      const { data } = await axios.get(
         `${this.baseUrl}/checks/${checkId}`,
-        { headers: this.getHeaders() }
+        { headers: this.headers }
       );
+      
       return {
         id: checkId,
-        status: response.data.status,
-        details: response.data,
+        status: data.status,
+        details: data
       };
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new Error(`Failed to get verification status: ${error.message}`);
-      }
-      throw new Error('Failed to get verification status: Unknown error');
+    } catch (error) {
+      this.handleError(error, 'get verification status');
     }
   }
 }
