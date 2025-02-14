@@ -8,7 +8,7 @@ export interface CustomerInfo {
     firstName: string;
     lastName: string;
     dob: string;
-    nationality: string;
+    nationality?: string;
   };
 }
 

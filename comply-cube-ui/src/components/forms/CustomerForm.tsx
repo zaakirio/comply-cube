@@ -70,11 +70,6 @@ export const CustomerForm: React.FC = () => {
   };
 
 
-  // const handleVerificationComplete = (data: string) => {
-  //   console.log('Verification completed:', data);
-  // };
-
-
   return (
     <>
       {!verificationData ? (
@@ -163,7 +158,6 @@ export const CustomerForm: React.FC = () => {
         </Card>) : (
         <VerificationFlow
           clientId={verificationData.clientId}
-        // onComplete={handleVerificationComplete}
         />
       )}
     </>
