@@ -31,7 +31,7 @@ const validateDate = (date: string): boolean => {
 };
 
 const validateName = (name: string): boolean => {
-  const nameRegex = /^[A-Za-zÁáÉéÍíÓóÚúÑñÜü\s'-]+$/; 
+  const nameRegex = /^[A-Za-zÁãáÉéÍíÓóÚúÑñÜü\s'-]+$/; 
   return nameRegex.test(name);
 };
 

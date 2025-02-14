@@ -69,14 +69,13 @@ export const CustomerForm: React.FC = () => {
     }
   };
 
-
   return (
     <>
       {!verificationData ? (
-        <Card className="w-full max-w-md mx-auto">
+        <Card className="w-full max-w-lg mx-auto rounded-lg shadow-lg p-6">
           <CardHeader>
-            <CardTitle>Identity Verification</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-center text-2xl font-semibold">Identity Verification</CardTitle>
+            <CardDescription className="text-center text-sm text-gray-600">
               Please provide your information in order to begin verification process
             </CardDescription>
           </CardHeader>
@@ -111,7 +110,7 @@ export const CustomerForm: React.FC = () => {
                   country={'gb'}
                   value={formData.phone}
                   onChange={handlePhoneChange}
-                  inputClass="w-full p-2 border rounded-md"
+                  inputClass="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   containerClass="phone-input"
                   enableSearch
                   countryCodeEditable={false}
@@ -122,7 +121,6 @@ export const CustomerForm: React.FC = () => {
                     return true;
                   }}
                 />
-
               </div>
 
               <FormField
@@ -134,10 +132,9 @@ export const CustomerForm: React.FC = () => {
                 required
               />
 
-
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full py-3 rounded-md transition duration-200"
               >
                 {verificationState.status === 'pending' ? (
                   <>
@@ -155,11 +152,10 @@ export const CustomerForm: React.FC = () => {
               message={verificationState.message}
             />
           </CardContent>
-        </Card>) : (
-        <VerificationFlow
-          clientId={verificationData.clientId}
-        />
+        </Card>
+      ) : (
+        <VerificationFlow clientId={verificationData.clientId} />
       )}
     </>
-  )
-}
+  );
+};
