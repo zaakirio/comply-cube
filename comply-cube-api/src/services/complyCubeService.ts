@@ -3,8 +3,8 @@ import {
   CustomerInfo,
   DocumentInfo,
   CheckInfo,
-  VerificationResult,
-  BaseDocument
+  BaseDocument,
+  CheckResult
 } from '../types';
 
 export class ComplyCubeService {
@@ -37,7 +37,7 @@ export class ComplyCubeService {
           personDetails: {
             firstName: customerInfo.personDetails.firstName,
             lastName: customerInfo.personDetails.lastName,
-            dob: customerInfo.personDetails.dateOfBirth,
+            dob: customerInfo.personDetails.dob,
             nationality: customerInfo.personDetails.nationality
           }
         },
@@ -56,7 +56,6 @@ export class ComplyCubeService {
         {
           clientId: documentInfo.clientId,
           type: documentInfo.documentType,
-          issuingCountry: documentInfo.issuingCountry
         },
         { headers: this.headers }
       );
@@ -120,7 +119,7 @@ export class ComplyCubeService {
     }
   }
 
-  async getVerificationStatus(checkId: string): Promise<VerificationResult> {
+  async getCheckResult(checkId: string): Promise<CheckResult> {
     try {
       const { data } = await axios.get(
         `${this.baseUrl}/checks/${checkId}`,
@@ -128,7 +127,7 @@ export class ComplyCubeService {
       );
       
       return {
-        id: checkId,
+        id: data.id,
         status: data.status,
         details: data
       };

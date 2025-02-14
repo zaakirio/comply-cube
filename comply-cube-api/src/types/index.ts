@@ -8,7 +8,7 @@ export interface ClientOwned {
 export interface PersonDetails {
   firstName: string;
   lastName: string;
-  dateOfBirth: string;
+  dob: string;
   nationality: string;
 }
 
@@ -24,13 +24,12 @@ export interface CustomerInfo extends ContactInfo {
 
 export interface BaseDocument extends ClientOwned {
   documentType: string;
-  issuingCountry: string;
 }
 
-export interface DocumentInfo extends BaseDocument {
-  documentId?: string;
-  fileName?: string;
-  data?: string;
+export interface DocumentInfo {
+  documentId: string;
+  fileName: string;
+  data: string;
 }
 
 export interface CheckInfo extends ClientOwned {
@@ -38,7 +37,7 @@ export interface CheckInfo extends ClientOwned {
   livePhotoId: string;
 }
 
-export interface VerificationResult {
+export interface CheckResult {
   id: string;
   status: VerificationStatus;
   details: Record<string, unknown>; 
