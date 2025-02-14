@@ -1,4 +1,3 @@
-// src/components/layout/PageContainer.tsx
 import React from 'react';
 
 interface PageContainerProps {

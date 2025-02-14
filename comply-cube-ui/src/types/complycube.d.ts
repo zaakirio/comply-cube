@@ -1,14 +1,16 @@
-// src/types/complycube.d.ts
 interface ComplyCubeSDK {
-    open: () => void;
+  mount: (config: {
+    token: string;
+    containerId: string;
+    onComplete?: (data: any) => void;
+    onError?: (error: Error) => void;
+    onCancelled?: () => void;
+    onClosed?: () => void;
+  }) => void;
+}
+
+declare global {
+  interface Window {
+    ComplyCube: ComplyCubeSDK;
   }
-  
-  interface ComplyCubeConstructor {
-    new(config: { token: string; clientId: string }): ComplyCubeSDK;
-  }
-  
-  declare global {
-    interface Window {
-      ComplyCube: ComplyCubeConstructor;
-    }
-  }
+}

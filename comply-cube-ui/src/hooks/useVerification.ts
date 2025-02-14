@@ -1,4 +1,3 @@
-// src/hooks/useVerification.ts
 import { useState } from 'react';
 import { CustomerInfo } from '@/types/customer';
 import { VerificationState } from '@/types/verification';
@@ -22,7 +21,6 @@ export const useVerification = () => {
         message: 'Verification process started successfully',
       });
 
-      // Initialize ComplyCube SDK
       if ((window as any).ComplyCube) {
         const complyCube = new (window as any).ComplyCube({
           token: import.meta.env.VITE_COMPLYCUBE_CLIENT_TOKEN,

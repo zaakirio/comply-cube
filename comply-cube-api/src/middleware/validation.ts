@@ -6,9 +6,14 @@ interface ValidationError {
   message: string;
 }
 
-// Define proper request types
 interface CustomerInfoRequest extends Request {
   body: CustomerInfo;
+}
+
+interface SdkTokenRequest extends Request {
+  body: {
+    clientId: string;
+  };
 }
 
 const validateEmail = (email: string): boolean => {
@@ -19,9 +24,15 @@ const validateEmail = (email: string): boolean => {
 const validateDate = (date: string): boolean => {
   const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
   if (!dateRegex.test(date)) return false;
-  
+
   const parsedDate = new Date(date);
-  return parsedDate.toString() !== 'Invalid Date';
+  const today = new Date();
+  return parsedDate.toString() !== 'Invalid Date' && parsedDate <= today;
+};
+
+const validateName = (name: string): boolean => {
+  const nameRegex = /^[A-Za-z]+$/; // Ensures name contains only alphabetic characters
+  return nameRegex.test(name);
 };
 
 export const validateCustomerInfo = (
@@ -48,27 +59,48 @@ export const validateCustomerInfo = (
 
   if (!info.personDetails) {
     errors.push({ field: 'personDetails', message: 'Person details are required' });
+  } else {
+    const { personDetails } = info;
+
+    if (!personDetails.firstName) {
+      errors.push({ field: 'firstName', message: 'First name is required' });
+    } else if (!validateName(personDetails.firstName)) {
+      errors.push({ field: 'firstName', message: 'First name should contain only letters' });
+    }
+
+    if (!personDetails.lastName) {
+      errors.push({ field: 'lastName', message: 'Last name is required' });
+    } else if (!validateName(personDetails.lastName)) {
+      errors.push({ field: 'lastName', message: 'Last name should contain only letters' });
+    }
+
+    if (!personDetails.dob) {
+      errors.push({ field: 'dob', message: 'Date of birth is required' });
+    } else if (!validateDate(personDetails.dob)) {
+      errors.push({ field: 'dob', message: 'Invalid date format or future date is not allowed' });
+    }
+  }
+
+  if (errors.length > 0) {
+    res.status(400).json({ errors });
     return;
   }
 
-  const { personDetails } = info;
-  
-  if (!personDetails.firstName) {
-    errors.push({ field: 'firstName', message: 'First name is required' });
-  }
-  
-  if (!personDetails.lastName) {
-    errors.push({ field: 'lastName', message: 'Last name is required' });
-  }
-  
-  if (!personDetails.dob) {
-    errors.push({ field: 'dob', message: 'Date of birth is required' });
-  } else if (!validateDate(personDetails.dob)) {
-    errors.push({ field: 'dob', message: 'Invalid date format. Use YYYY-MM-DD' });
-  }
+  next();
+};
 
-  if (!personDetails.nationality) {
-    errors.push({ field: 'nationality', message: 'Nationality is required' });
+export const validateSdkTokenRequest = (
+  req: SdkTokenRequest,
+  res: Response,
+  next: NextFunction
+): void => {
+  const errors: ValidationError[] = [];
+  const { clientId } = req.body;
+
+  if (!clientId) {
+    errors.push({ field: 'clientId', message: 'Client ID is required' });
+  } else if (typeof clientId !== 'string' || clientId.trim().length === 0) {
+    errors.push({ field: 'clientId', message: 'Invalid Client ID format' });
   }
 
   if (errors.length > 0) {

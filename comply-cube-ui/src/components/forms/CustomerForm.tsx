@@ -1,25 +1,32 @@
-// src/components/forms/CustomerForm.tsx
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FormField } from './FormField';
 import { StatusAlert } from '../status/StatusAlert';
-import { CustomerInfo } from '@/types/customer';
-import { VerificationState } from '@/types/verification';
+import { CustomerInfo, PersonDetails } from '@/types/customer';
+import { useVerification } from '@/hooks/useVerification';
 import { Loader2 } from 'lucide-react';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
+import { VerificationFlow } from '../verification/VerificationFlow';
 
-const initialFormState: CustomerInfo = {
+interface FormData extends PersonDetails {
+  email: string;
+  phone: string;
+}
+
+const initialFormState: FormData = {
   firstName: '',
   lastName: '',
   email: '',
-  dateOfBirth: '',
+  dob: '',
+  phone: ''
 };
 
 export const CustomerForm: React.FC = () => {
-  const [formData, setFormData] = useState<CustomerInfo>(initialFormState);
-  const [verificationState, setVerificationState] = useState<VerificationState>({
-    status: 'idle',
-  });
+  const [formData, setFormData] = useState<FormData>(initialFormState);
+  const { verificationState, startVerification } = useVerification();
+  const [verificationData, setVerificationData] = useState<{ clientId: string } | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -29,112 +36,142 @@ export const CustomerForm: React.FC = () => {
     }));
   };
 
+  const handlePhoneChange = (value: string, country: { countryCode: string }) => {
+    setFormData(prev => ({
+      ...prev,
+      phone: value,
+      nationality: country.countryCode.toUpperCase()
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setVerificationState({ status: 'pending' });
+
+    const customerData: CustomerInfo = {
+      type: 'person',
+      email: formData.email,
+      mobile: `+${formData.phone}`,
+      personDetails: {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        dob: formData.dob,
+      }
+    };
 
     try {
-      const response = await fetch('http://localhost:3001/api/verification/onboard', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-    
-      const data = await response.json();
-    
-      if (!response.ok) {
-        throw new Error(data.error || 'Verification failed');
-      }
-    
-      setVerificationState({
-        status: 'completed',
-        clientId: data.clientId,
-        checkId: data.checkId,
-        message: 'Verification process started successfully',
-      });
-    
-      // Simpler ComplyCube initialization
-      if ((window as any).ComplyCube) {
-        const complyCube = new (window as any).ComplyCube({
-          token: import.meta.env.VITE_COMPLYCUBE_CLIENT_TOKEN,
-          clientId: data.clientId,
-        });
-    
-        complyCube.open();
-      }
-    
+      const response = await startVerification(customerData);
+      setVerificationData({ clientId: response.clientId });
     } catch (error) {
-      setVerificationState({
-        status: 'failed',
-        message: error instanceof Error ? error.message : 'Unknown error occurred',
-      });
+      console.error('Verification error:', error);
     }
   };
 
+  const isValidForm = () => {
+    return (
+      formData.firstName &&
+      formData.lastName &&
+      formData.email &&
+      formData.dob &&
+      formData.phone && 
+      formData.phone.length >= 6 
+    );
+  };
+  const handleVerificationComplete = (data: any) => {
+    console.log('Verification completed:', data);
+  };
+
+
   return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader>
-        <CardTitle>Identity Verification</CardTitle>
-        <CardDescription>
-          Please provide your information for verification
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <FormField
-            label="First Name"
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleInputChange}
-            required
-          />
-          <FormField
-            label="Last Name"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleInputChange}
-            required
-          />
-          <FormField
-            label="Email"
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            required
-          />
-          <FormField
-            label="Date of Birth"
-            name="dateOfBirth"
-            type="date"
-            value={formData.dateOfBirth}
-            onChange={handleInputChange}
-            required
-          />
+    <>
+      {!verificationData ? (
+        <Card className="w-full max-w-md mx-auto">
+          <CardHeader>
+            <CardTitle>Identity Verification</CardTitle>
+            <CardDescription>
+              Please provide your information in order to begin verification process
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <FormField
+                label="First Name"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleInputChange}
+                required
+              />
+              <FormField
+                label="Last Name"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleInputChange}
+                required
+              />
+              <FormField
+                label="Email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+              />
 
-          <Button 
-            type="submit" 
-            className="w-full"
-            disabled={verificationState.status === 'pending'}
-          >
-            {verificationState.status === 'pending' ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Processing
-              </>
-            ) : (
-              'Start Verification'
-            )}
-          </Button>
-        </form>
+              <div className="space-y-2">
+                <label className="block text-sm font-medium">Phone Number</label>
+                <PhoneInput
+                  country={'gb'}
+                  value={formData.phone}
+                  onChange={handlePhoneChange}
+                  inputClass="w-full p-2 border rounded-md"
+                  containerClass="phone-input"
+                  enableSearch
+                  countryCodeEditable={false}
+                  isValid={(value, country) => {
+                    if (!value || value.length < 10) {
+                      return 'Invalid phone number';
+                    }
+                    return true;
+                  }}
+                />
 
-        <StatusAlert 
-          status={verificationState.status}
-          message={verificationState.message}
+              </div>
+
+              <FormField
+                label="Date of Birth"
+                name="dob"
+                type="date"
+                value={formData.dob}
+                onChange={handleInputChange}
+                required
+              />
+
+
+              <Button
+                type="submit"
+                className="w-full"
+              >
+                {verificationState.status === 'pending' ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Processing
+                  </>
+                ) : (
+                  'Initialize Verification Process'
+                )}
+              </Button>
+            </form>
+
+            <StatusAlert
+              status={verificationState.status}
+              message={verificationState.message}
+            />
+          </CardContent>
+        </Card>) : (
+        <VerificationFlow
+          clientId={verificationData.clientId}
+          onComplete={handleVerificationComplete}
         />
-      </CardContent>
-    </Card>
-  );
-};
+      )}
+    </>
+  )
+}

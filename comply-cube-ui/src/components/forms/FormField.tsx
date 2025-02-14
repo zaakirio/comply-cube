@@ -1,4 +1,3 @@
-// src/components/forms/FormField.tsx
 import React from 'react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -20,6 +19,8 @@ export const FormField: React.FC<FormFieldProps> = ({
   onChange,
   required = false,
 }) => {
+  const today = new Date().toISOString().split('T')[0];
+
   return (
     <div className="space-y-2">
       <Label htmlFor={name}>{label}</Label>
@@ -31,6 +32,7 @@ export const FormField: React.FC<FormFieldProps> = ({
         onChange={onChange}
         required={required}
         className="w-full"
+        {...(type === 'date' ? { max: today } : {})} 
       />
     </div>
   );

@@ -95,3 +95,31 @@
     @apply bg-background text-foreground;
   }
 }
+
+.phone-input {
+  width: 100%;
+}
+
+.phone-input .form-control {
+  width: 100% !important;
+  height: 38px !important;
+  border-radius: 0.375rem !important;
+  padding-left: 48px !important;
+}
+
+.phone-input .flag-dropdown {
+  border-radius: 0.375rem 0 0 0.375rem !important;
+}
+#verification-container {
+  min-height: 400px;
+  position: relative;
+}
+
+#complycube-mount {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}

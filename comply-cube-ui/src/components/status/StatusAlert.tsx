@@ -1,4 +1,3 @@
-// src/components/status/StatusAlert.tsx
 import React from 'react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
