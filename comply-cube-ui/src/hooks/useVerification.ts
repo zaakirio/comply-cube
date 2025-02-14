@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { CustomerInfo } from '@/types/customer';
 import { VerificationState } from '@/types/verification';
-import { verifyCustomer } from '@/services/api';
+import { checkVerificationStatus, verifyCustomer } from '@/services/api';
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 export const useVerification = () => {
   const [verificationState, setVerificationState] = useState<VerificationState>({
@@ -40,11 +40,11 @@ export const useVerification = () => {
     }
   };
 
-  const checkVerificationStatus = async (checkId: string) => {
+  const verifyStatus = async (checkId: string) => {
     try {
       setVerificationState({ status: 'pending' });
       
-      const status = await verifyCustomer(checkId);
+      const status = await checkVerificationStatus(checkId);
       
       setVerificationState({
         status: 'completed',
@@ -65,6 +65,6 @@ export const useVerification = () => {
   return {
     verificationState,
     startVerification,
-    checkVerificationStatus,
+    verifyStatus,
   };
 };

@@ -206,7 +206,7 @@ export const VerificationFlow: React.FC<VerificationFlowProps> = ({
           console.log('Verification completed:', data);
           handleVerificationComplete(data);
         },
-        onError: ({ type, message }) => {
+        onError: ({ type, message }: { type: string; message: string }) => {
           console.error('Verification error:', { type, message });
           if (type === 'token_expired') {
             refreshToken();
@@ -218,7 +218,7 @@ export const VerificationFlow: React.FC<VerificationFlowProps> = ({
           }
         },
         onModalClose: handleModalClose,
-        onExit: (reason) => {
+        onExit: (reason: string) => {
           console.log('Exit reason:', reason);
           setVerificationStatus(`Verification process cancelled`);
           setIsVerificationComplete(true);
