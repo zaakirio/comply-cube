@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { CustomerInfo } from '@/types/customer';
 import { VerificationState } from '@/types/verification';
 import { verifyCustomer } from '@/services/api';
-
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 export const useVerification = () => {
   const [verificationState, setVerificationState] = useState<VerificationState>({
     status: 'idle',

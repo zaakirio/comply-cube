@@ -1,3 +1,4 @@
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 interface ComplyCubeSDK {
   mount: (config: {
     token: string;

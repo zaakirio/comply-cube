@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2, CheckCircle2, XCircle } from 'lucide-react';
 import { getSdkToken, createIdentityCheck, getCheckStatus } from '@/services/api';
-
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 interface VerificationFlowProps {
   clientId: string;
   onComplete?: (data: any) => void;
@@ -74,7 +74,6 @@ export const VerificationFlow: React.FC<VerificationFlowProps> = ({
 
       try {
         const result = await getCheckStatus(checkId);
-        console.log('Check status:', result);
 
         const statusMessages = {
           pending: 'Processing your verification...',

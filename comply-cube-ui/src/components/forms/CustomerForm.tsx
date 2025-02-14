@@ -25,6 +25,8 @@ const initialFormState: FormData = {
 
 export const CustomerForm: React.FC = () => {
   const [formData, setFormData] = useState<FormData>(initialFormState);
+  const [enterredPhone, setEnterredPhone] = useState({ phone: false });
+
   const { verificationState, startVerification } = useVerification();
   const [verificationData, setVerificationData] = useState<{ clientId: string } | null>(null);
 
@@ -40,8 +42,9 @@ export const CustomerForm: React.FC = () => {
     setFormData(prev => ({
       ...prev,
       phone: value,
-      nationality: country.countryCode.toUpperCase()
+      nationality: country.countryCode.toUpperCase(),
     }));
+    setEnterredPhone(prev => ({ ...prev, phone: true }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -66,19 +69,10 @@ export const CustomerForm: React.FC = () => {
     }
   };
 
-  const isValidForm = () => {
-    return (
-      formData.firstName &&
-      formData.lastName &&
-      formData.email &&
-      formData.dob &&
-      formData.phone && 
-      formData.phone.length >= 6 
-    );
-  };
-  const handleVerificationComplete = (data: any) => {
-    console.log('Verification completed:', data);
-  };
+
+  // const handleVerificationComplete = (data: string) => {
+  //   console.log('Verification completed:', data);
+  // };
 
 
   return (
@@ -126,8 +120,8 @@ export const CustomerForm: React.FC = () => {
                   containerClass="phone-input"
                   enableSearch
                   countryCodeEditable={false}
-                  isValid={(value, country) => {
-                    if (!value || value.length < 10) {
+                  isValid={(value) => {
+                    if (enterredPhone.phone && (!value || value.length < 10)) {
                       return 'Invalid phone number';
                     }
                     return true;
@@ -169,7 +163,7 @@ export const CustomerForm: React.FC = () => {
         </Card>) : (
         <VerificationFlow
           clientId={verificationData.clientId}
-          onComplete={handleVerificationComplete}
+        // onComplete={handleVerificationComplete}
         />
       )}
     </>
