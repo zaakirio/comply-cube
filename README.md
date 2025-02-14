@@ -29,7 +29,7 @@ This project integrates the ComplyCube API with a custom verification flow using
 ### Frontend
 1. Navigate to the frontend directory:
    ```bash
-   cd frontend
+   cd comply-cub-ui
    ```
 
 2. Install the dependencies:
@@ -47,7 +47,7 @@ The frontend will be available at `http://localhost:5173`.
 ### Backend
 1. Navigate to the backend directory:
    ```bash
-   cd backend
+   cd comply-cub-api
    ```
 
 2. Install the dependencies:
