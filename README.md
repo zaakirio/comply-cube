@@ -1,4 +1,7 @@
 # Comply Cube React Typescript Integration
+Live at 🔴 - https://complycube-react-typescript.netlify.app
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/7c4f572c-e696-4251-9c10-e6676c90c249/deploy-status)](https://app.netlify.com/sites/complycube-react-typescript/deploys)
 
 This project integrates the ComplyCube API with a custom verification flow using a React frontend and a TypeScript/Node.js/Express backend. The application handles identity verification, including document upload and live photo.
 
@@ -29,7 +32,7 @@ This project integrates the ComplyCube API with a custom verification flow using
 ### Frontend
 1. Navigate to the frontend directory:
    ```bash
-   cd comply-cub-ui
+   cd comply-cube-ui
    ```
 
 2. Install the dependencies:
@@ -47,7 +50,7 @@ The frontend will be available at `http://localhost:5173`.
 ### Backend
 1. Navigate to the backend directory:
    ```bash
-   cd comply-cub-api
+   cd comply-cube-api
    ```
 
 2. Install the dependencies:
