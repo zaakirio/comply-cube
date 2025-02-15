@@ -3,7 +3,10 @@ Live at 🔴 - https://complycube-react-typescript.netlify.app
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/7c4f572c-e696-4251-9c10-e6676c90c249/deploy-status)](https://app.netlify.com/sites/complycube-react-typescript/deploys)
 
-![image](https://github.com/user-attachments/assets/94e4dd11-75bd-4613-9a17-c4c70fe0ac2c)
+
+## Sequence Diagram
+![image](https://github.com/user-attachments/assets/c3d19a98-a542-484c-bac3-9e21235b566a)
+
 
 This project integrates the ComplyCube API with a custom verification flow using a React frontend and a TypeScript/Node.js/Express backend. The application handles identity verification, including document upload and live photo.
 
